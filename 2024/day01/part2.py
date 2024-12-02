@@ -1,10 +1,11 @@
 from collections import Counter
 
+from utils.load import load_as_lines
+
 
 def solve(year: int, day: int):
     # read input
-    with open(f"input/{year}/day{day:02}/input.txt", "r") as input_file:
-        input: list[str] = input_file.readlines()
+    input = load_as_lines(year, day)
     # parse input
     left: list[int] = []
     right: list[int] = []
