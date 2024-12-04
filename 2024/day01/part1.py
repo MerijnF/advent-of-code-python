@@ -1,9 +1,9 @@
 from utils.load import load_as_lines
 
 
-def solve(year: int, day: int):
+def solve(year: int, day: int, test: bool = False):
     # read input
-    input = load_as_lines(year, day)
+    input = load_as_lines(year, day, test)
     # parse input
     left: list[int] = []
     right: list[int] = []

@@ -3,9 +3,9 @@ from datetime import datetime
 import argparse
 
 
-def solve(year: int, day: int, part: int):
+def solve(year: int, day: int, part: int, test: bool):
     module = import_module(f"{year}.day{day:02}.part{part}")
-    module.solve(year, day)
+    module.solve(year, day, test)
     return
 
 
@@ -14,6 +14,7 @@ if __name__ == "__main__":
     parser.add_argument("day")
     parser.add_argument("part")
     parser.add_argument("-y", "--year")
+    parser.add_argument("-t", "--test", action="store_true")
 
     args = parser.parse_args()
 
@@ -25,4 +26,4 @@ if __name__ == "__main__":
     day = int(args.day)
     part = int(args.part)
 
-    solve(year, day, part)
+    solve(year, day, part, args.test)

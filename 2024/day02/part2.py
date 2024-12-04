@@ -6,8 +6,8 @@ def difference(a: int, b: int):
     return abs(a - b)
 
 
-def solve(year, day):
-    input = load_as_lines(year, day)
+def solve(year, day, test=False):
+    input = load_as_lines(year, day, test)
     solution: int = 0
     for line in input:
         split = list(map(int, line.split()))
