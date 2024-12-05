@@ -5,7 +5,7 @@ SEARCH_CHARS: list[chr] = ["X", "M", "A", "S"]
 
 def solve(year: int, day: int, test: bool = False):
     input = load_as_line_characters(year, day, test)
-
+    print(input)
     solution = 0
     for x, line in enumerate(input):
         for y, char in enumerate(line):
