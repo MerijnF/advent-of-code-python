@@ -2,8 +2,8 @@ from utils.load import load_as_string
 import re
 
 
-def solve(year: int, day: int):
-    input = load_as_string(year, day)
+def solve(year: int, day: int, test: bool = False):
+    input = load_as_string(year, day, test)
     found = re.findall(r"mul\(([0-9]+),([0-9]+)\)", input)
     solution: int = 0
 
