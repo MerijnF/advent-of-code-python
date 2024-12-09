@@ -10,6 +10,12 @@ def load_as_string(year: int, day: int, test: bool = False) -> str:
         return input_file.read()
 
 
+def load_as_characters(year: int, day: int, test: bool = False) -> list[chr]:
+    prefix = get_test_prefix(test)
+    with open(f"input/{year}/day{day:02}/{prefix}input.txt", "r") as input_file:
+        return list(input_file.read().strip())
+
+
 def load_as_split_lines(year: int, day: int, test: bool = False) -> list[list[str]]:
     prefix = get_test_prefix(test)
     with open(f"input/{year}/day{day:02}/{prefix}input.txt", "r") as input_file:
