@@ -27,8 +27,8 @@ class Grid[T]:
 
     def find(self, value: T) -> list[tuple[int, int]]:
         result = []
-        for x, y in self.iterate():
-            if self.get(x, y) == value:
+        for x, y, val in self.iterate():
+            if val == value:
                 result.append((x, y))
         return result
 
