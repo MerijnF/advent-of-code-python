@@ -3,13 +3,13 @@ from collections import Counter
 from utils.load import load_as_lines
 
 
-def solve(year: int, day: int, test: bool = False):
+def solve(year: int, day: int, test: bool = False) -> None:
     # read input
-    input = load_as_lines(year, day, test)
+    test_input = load_as_lines(year, day, test)
     # parse input
     left: list[int] = []
     right: list[int] = []
-    for line in input:
+    for line in test_input:
         split = line.split()
         left.append(int(split[0]))
         right.append(int(split[1]))
@@ -18,7 +18,7 @@ def solve(year: int, day: int, test: bool = False):
     counted = Counter(right)
 
     solution: int = 0
-    for i, a in enumerate(left):
+    for _, a in enumerate(left):
         if a in counted:
             solution += a * counted[a]
 

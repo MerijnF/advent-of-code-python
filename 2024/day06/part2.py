@@ -4,9 +4,9 @@ from utils.load import load_as_line_characters
 
 
 def solve(year: int, day: int, test: bool = False):
-    input = load_as_line_characters(year, day, test)
+    test_input = load_as_line_characters(year, day, test)
 
-    grid = Grid(input)
+    grid = Grid(test_input)
     grid_stepper = GridStepper(grid)
 
     grid_stepper.find_start("^")
@@ -17,9 +17,9 @@ def solve(year: int, day: int, test: bool = False):
     grid_stepper.direction = "U"
 
     def on_collision(
-        x, y, prev_x, prev_y, direction
+        _x, _y, prev_x: int, prev_y: int, direction: Literal["U", "D", "L", "R"]
     ) -> tuple[int, int, Literal["U", "D", "L", "R"]]:
-        new_direction = None
+        new_direction: Literal["U", "D", "L", "R"] = "U"
         match direction:
             case "U":
                 new_direction = "R"
@@ -40,7 +40,7 @@ def solve(year: int, day: int, test: bool = False):
     for x, y in grid_stepper.visited():
         if x == start_x and y == start_y:
             continue
-        new_grid = grid.deepCopy()
+        new_grid = grid.deepcopy()
         new_grid.set(x, y, "#")
 
         new_grid_stepper = GridStepper(new_grid, (start_x, start_y))

@@ -2,27 +2,27 @@ from utils.load import load_as_characters
 
 
 def solve(year: int, day: int, test: bool = False):
-    input = load_as_characters(year, day, test)
+    test_input = load_as_characters(year, day, test)
 
     disk = []
 
-    id = 0
+    next_id = 0
     file = True
-    for char in input:
+    for char in test_input:
         number = int(char)
         for i in range(number):
             if file:
-                disk.append(id)
+                disk.append(next_id)
             else:
                 disk.append(-1)
         if file:
-            id += 1
+            next_id += 1
 
         file = not file
 
     formatted_disk = []
     reversed_pointer = len(disk) - 1
-    for disk_pointer in range(len(disk)):
+    for disk_pointer, _ in enumerate(disk):
         if disk[disk_pointer] != -1:
             formatted_disk.append(disk[disk_pointer])
         else:

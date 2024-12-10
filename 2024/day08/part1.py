@@ -1,22 +1,22 @@
 from typing import Dict
+from itertools import permutations
 from utils.grid import Grid
 from utils.load import load_as_line_characters
-from itertools import permutations
 
 
 def solve(year: int, day: int, test: bool = False):
-    input = load_as_line_characters(year, day, test)
-    nodes = Grid(input)
+    test_input = load_as_line_characters(year, day, test)
+    nodes = Grid(test_input)
 
-    frequencies: Dict[chr, list[tuple[int, int]]] = {}
+    frequencies: Dict[str, list[tuple[int, int]]] = {}
 
-    for x, y, val in nodes.iterate():
+    for _, _, val in nodes.iterate():
         if val != "." and val not in frequencies:
             frequencies[val] = nodes.find(val)
 
     anti_nodes = Grid([["." for _ in range(nodes.width)] for _ in range(nodes.height)])
 
-    for key, value in frequencies.items():
+    for _, value in frequencies.items():
         for xy_a, xy_b in permutations(value, 2):
             a_x, a_y = xy_a
             b_x, b_y = xy_b

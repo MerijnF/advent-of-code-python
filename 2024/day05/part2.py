@@ -1,17 +1,20 @@
-from utils.load import load_as_parts_of_lines
 from functools import cmp_to_key
 from typing import Dict
 import math
+from utils.load import load_as_parts_of_lines
 
 
 def solve(year: int, day: int, test: bool = False):
+    # pylint: disable=W0632
     rules, page_sets = load_as_parts_of_lines(year, day, test)
+    # pylint: enable=W0632
     rules_comes_after: Dict[int, list[int]] = {}
     rules_comes_before: Dict[int, list[int]] = {}
     for rule in rules:
         split = rule.split("|")
         a = int(split[0])
         b = int(split[1])
+        # pylint: disable=C0201
         if a not in rules_comes_after.keys():
             rules_comes_after[a] = [b]
         else:
@@ -21,16 +24,17 @@ def solve(year: int, day: int, test: bool = False):
             rules_comes_before[b] = [a]
         else:
             rules_comes_before[b].append(a)
-
+        # pylint: enable=C0201
     solution = 0
     for pages in page_sets:
         page_numbers = [int(number) for number in pages.split(",")]
+        cmp_key = cmp_to_key(
+            lambda a, b: compare(a, b, rules_comes_after, rules_comes_before)  # type: ignore
+        )
         if not are_pages_valid(page_numbers, rules_comes_after):
             sorted_page = sorted(
                 page_numbers,
-                key=cmp_to_key(
-                    lambda a, b: compare(a, b, rules_comes_after, rules_comes_before)
-                ),
+                key=cmp_key,
             )
 
             solution += sorted_page[math.floor(len(page_numbers) / 2)]

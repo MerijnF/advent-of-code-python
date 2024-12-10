@@ -1,8 +1,10 @@
-from typing import Generator, Literal, Callable
+from typing import Generator, Generic, Literal, Callable, TypeVar
 import copy
 
+T = TypeVar("T")
 
-class Grid[T]:
+
+class Grid(Generic[T]):
     data: list[list[T]]
 
     def __init__(self, data: list[list[T]], orientation: Literal["XY", "YX"] = "YX"):
@@ -32,10 +34,11 @@ class Grid[T]:
                 result.append((x, y))
         return result
 
-    def find_first(self, value: T) -> tuple[int, int]:
+    def find_first(self, value: T) -> tuple[int, int] | None:
         for x, y, val in self.iterate():
             if val == value:
                 return (x, y)
+        return None
 
     def iterate(self):
         for y in range(self.height):
@@ -47,13 +50,15 @@ class Grid[T]:
 
     def print(self):
         for y_line in self.data:
-            print("".join(y_line))
+            for val in y_line:
+                print(val, end="")
+            print()
 
-    def deepCopy(self):
+    def deepcopy(self):
         return Grid(copy.deepcopy(self.data), self.orientation)
 
 
-class GridStepper[T]:
+class GridStepper(Generic[T]):
 
     on_collision: Callable[
         [int, int, int, int, Literal["U", "D", "L", "R"]],
@@ -63,7 +68,7 @@ class GridStepper[T]:
     def __init__(
         self,
         grid: Grid[T],
-        start: tuple[int:int] = (-1, -1),
+        start: tuple[int, int] = (-1, -1),
         direction: Literal["U", "D", "L", "R"] = "U",
     ):
         self.grid = grid
@@ -73,8 +78,10 @@ class GridStepper[T]:
         self.direction = direction
 
     def find_start(self, start: T):
-        self.x, self.y = self.grid.find_first(start)
-        self.visited_mask.set(self.x, self.y, (True, [self.direction]))
+        found = self.grid.find_first(start)
+        if found is not None:
+            self.x, self.y = found
+            self.visited_mask.set(self.x, self.y, (True, [self.direction]))
 
     def fill_collision_mask(self, walkable: Callable[[T], bool]):
         for x, y, val in self.grid.iterate():
@@ -86,10 +93,8 @@ class GridStepper[T]:
             [[False for _ in range(self.grid.width)] for _ in range(self.grid.height)]
         )
 
-    def create_visited_mask(self):
-        self.visited_mask: list[
-            list[tuple[bool, list[Literal["U", "D", "L", "R"]]]]
-        ] = Grid(
+    def create_visited_mask(self) -> None:
+        self.visited_mask: Grid[tuple[bool, list[Literal["U", "D", "L", "R"]]]] = Grid(
             [
                 [(False, []) for _ in range(self.grid.width)]
                 for _ in range(self.grid.height)
@@ -110,7 +115,7 @@ class GridStepper[T]:
         if not self.grid.in_bounds(next_x, next_y):
             return "OUT-OF-BOUNDS"
 
-        result = "OK"
+        result: Literal["OUT-OF-BOUNDS", "LOOP", "COLLISION", "OK"] = "OK"
 
         if self.collision_mask.get(next_x, next_y):
             next_x, next_y, self.direction = self.on_collision(
@@ -123,8 +128,8 @@ class GridStepper[T]:
         visited = self.visited_mask.get(self.x, self.y)
         if self.direction in visited[1]:
             return "LOOP"
-        else:
-            self.visited_mask.set(self.x, self.y, (True, visited[1] + [self.direction]))
+
+        self.visited_mask.set(self.x, self.y, (True, visited[1] + [self.direction]))
 
         return result
 

@@ -11,17 +11,17 @@ class DiskInfo:
 
 
 def solve(year: int, day: int, test: bool = False):
-    input = load_as_characters(year, day, test)
+    test_input = load_as_characters(year, day, test)
 
     disk: list[DiskInfo] = []
 
-    id = 0
+    next_id = 0
     file = True
-    for char in input:
+    for char in test_input:
         size = int(char)
         if file:
-            disk.append(DiskInfo(True, size, id))
-            id += 1
+            disk.append(DiskInfo(True, size, next_id))
+            next_id += 1
         else:
             disk.append(DiskInfo(False, size))
 
@@ -63,7 +63,8 @@ def solve(year: int, day: int, test: bool = False):
     for info in disk:
         if info.is_file:
             for _ in range(info.size):
-                check_sum += disk_index * info.id
+                if info.id is not None:
+                    check_sum += disk_index * info.id
                 disk_index += 1
         else:
             disk_index += info.size
