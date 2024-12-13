@@ -14,6 +14,16 @@ def load_as_string(year: int, day: int, test: bool = False) -> str:
         return input_file.read()
 
 
+def load_as_split_string_of_integers(
+    year: int, day: int, test: bool = False
+) -> list[int]:
+    prefix = get_test_prefix(test)
+    with open(
+        f"input/{year}/day{day:02}/{prefix}input.txt", "r", encoding="utf-8"
+    ) as input_file:
+        return [int(x) for x in input_file.read().strip().split()]
+
+
 def load_as_characters(year: int, day: int, test: bool = False) -> list[str]:
     prefix = get_test_prefix(test)
     with open(
