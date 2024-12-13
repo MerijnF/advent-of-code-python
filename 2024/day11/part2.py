@@ -1,5 +1,5 @@
-from utils.load import load_as_split_string_of_integers
 from functools import cache
+from utils.load import load_as_split_string_of_integers
 
 
 def solve(year: int, day: int, test: bool = False) -> None:
