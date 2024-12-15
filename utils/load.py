@@ -76,6 +76,24 @@ def load_as_parts_of_lines(
         return result
 
 
+def load_as_parts_of_line_characters(
+    year: int, day: int, test: bool = False, delimiter: str = "\n"
+) -> list[list[list[str]]]:
+    prefix = get_test_prefix(test)
+    with open(
+        f"input/{year}/day{day:02}/{prefix}input.txt", "r", encoding="utf-8"
+    ) as input_file:
+        result: list[list[list[str]]] = [[]]
+        index = 0
+        for line in input_file.readlines():
+            if line == delimiter:
+                index += 1
+                result.append([])
+            else:
+                result[index].append(list(line.strip()))
+        return result
+
+
 def get_test_prefix(test):
     prefix = ""
     if test:
