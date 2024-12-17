@@ -34,9 +34,12 @@ def solve(year: int, day: int, test: bool = False) -> None:
 def run(state: State) -> list[int]:
     halt = False
     out: list[int] = []
+    print(state)
     while not halt:
         instruction = state.program[state.pointer]
         operand = state.program[state.pointer + 1]
+        print(instruction, operand)
+
         match instruction:
             case 0:  # adv
                 op_value = get_combo_operand_value(state, operand)
@@ -60,6 +63,7 @@ def run(state: State) -> list[int]:
             case 5:  # out
                 op_value = get_combo_operand_value(state, operand)
                 out.append(op_value % 8)
+                print(out)
                 state.pointer += 2
             case 6:  # bdv
                 op_value = get_combo_operand_value(state, operand)
@@ -69,7 +73,7 @@ def run(state: State) -> list[int]:
                 op_value = get_combo_operand_value(state, operand)
                 state.c = trunc(state.a / (pow(2, op_value)))
                 state.pointer += 2
-
+        print(state)
         if state.pointer >= len(state.program):
             halt = True
     return out
