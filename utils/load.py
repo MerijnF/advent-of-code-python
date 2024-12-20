@@ -40,6 +40,19 @@ def load_as_split_lines(year: int, day: int, test: bool = False) -> list[list[st
         return [line.strip().split() for line in input_file.readlines()]
 
 
+def load_as_split_lines_as_integers(
+    year: int, day: int, test: bool = False, separator: str | None = None
+) -> list[list[int]]:
+    prefix = get_test_prefix(test)
+    with open(
+        f"input/{year}/day{day:02}/{prefix}input.txt", "r", encoding="utf-8"
+    ) as input_file:
+        return [
+            [int(x) for x in line.strip().split(separator)]
+            for line in input_file.readlines()
+        ]
+
+
 def load_as_line_characters(year: int, day: int, test: bool = False) -> list[list[str]]:
     prefix = get_test_prefix(test)
     with open(

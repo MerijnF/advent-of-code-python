@@ -1,7 +1,18 @@
+import heapq
 from typing import Generator, Generic, Literal, Callable, TypeVar
 import copy
 
 T = TypeVar("T")
+
+Directions = Literal["N", "E", "S", "W"]
+
+DIRECTIONS: list[Directions] = ["N", "E", "S", "W"]
+DIRECTION_VECTORS: dict[Directions, tuple[int, int]] = {
+    "N": (0, -1),
+    "E": (1, 0),
+    "S": (0, 1),
+    "W": (-1, 0),
+}
 
 
 class Grid(Generic[T]):
@@ -56,6 +67,63 @@ class Grid(Generic[T]):
 
     def deepcopy(self):
         return Grid(copy.deepcopy(self.data), self.orientation)
+
+
+class GridPathfinder(Generic[T]):
+    def __init__(
+        self,
+        grid: Grid[T],
+        walkable: Callable[[T], bool],
+        start: tuple[int, int] = (-1, -1),
+        end: tuple[int, int] = (-1, -1),
+    ):
+        self.grid = grid
+        self.start = start
+        self.end = end
+        self.walkable = walkable
+
+    def find_shortest_dist(self) -> int | None:
+        to_visit: list[tuple[tuple[int, int], int]] = []
+        visited: dict[tuple[int, int], int] = {}
+
+        visited[self.start] = 0
+
+        heapq.heapify(to_visit)
+        heapq.heappush(to_visit, (self.start, 0))
+
+        while to_visit:
+            pos, dist = heapq.heappop(to_visit)
+
+            for direction in DIRECTIONS:
+                next_pos = (
+                    pos[0] + DIRECTION_VECTORS[direction][0],
+                    pos[1] + DIRECTION_VECTORS[direction][1],
+                )
+                if not self.grid.in_bounds(*next_pos):
+                    continue
+
+                if not self.walkable(self.grid.get(*next_pos)):
+                    continue
+
+                new_dist = dist + 1
+
+                if next_pos in visited and visited[next_pos] <= new_dist:
+                    continue
+
+                visited[(next_pos)] = new_dist
+                heapq.heappush(to_visit, (next_pos, dist + 1))
+
+        return visited.get(self.end, None)
+
+    def find_start(self, start: T):
+        found = self.grid.find_first(start)
+        if found is not None:
+            self.start = found
+
+    def find_end(self, end: T):
+        found = self.grid.find_first(end)
+        if found is not None:
+            self.end = found
 
 
 class GridStepper(Generic[T]):
