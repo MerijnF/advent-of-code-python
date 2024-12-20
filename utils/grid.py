@@ -59,10 +59,24 @@ class Grid(Generic[T]):
     def in_bounds(self, x: int, y: int) -> bool:
         return x >= 0 and x < self.width and y >= 0 and y < self.height
 
-    def print(self):
+    def on_edge(self, x: int, y: int) -> bool:
+        return x == 0 or x == self.width - 1 or y == 0 or y == self.height - 1
+
+    def get_neighbors(self, x: int, y: int) -> list[tuple[int, int]]:
+        result = []
+        for direction in DIRECTIONS:
+            dx, dy = DIRECTION_VECTORS[direction]
+            if self.in_bounds(x + dx, y + dy):
+                result.append((x + dx, y + dy))
+        return result
+
+    def get_neighbor_values(self, x: int, y: int) -> list[T]:
+        return [self.get(*pos) for pos in self.get_neighbors(x, y)]
+
+    def print(self, cell_width: int = 1):
         for y_line in self.data:
             for val in y_line:
-                print(val, end="")
+                print(str(val).ljust(cell_width), end="")
             print()
 
     def deepcopy(self):
